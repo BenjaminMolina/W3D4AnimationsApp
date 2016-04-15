@@ -52,6 +52,13 @@ public class Puzzle implements Parcelable {
 
     }
 
+    public boolean isSolved(){
+        for (int i = 0; i < pieces.size(); i++) {
+            if (pieces.get(i) != i) return false;
+        }
+        return true;
+    }
+
     protected Puzzle(Parcel in) {
         if (in.readByte() == 0x01) {
             pieces = new Vector<Integer>();

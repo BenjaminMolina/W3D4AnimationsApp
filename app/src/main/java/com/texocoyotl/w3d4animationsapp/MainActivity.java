@@ -1,5 +1,7 @@
 package com.texocoyotl.w3d4animationsapp;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String PUZZLE_KEY = "puzzle";
     private int emptyPosition;
     private Puzzle puzzle;
+    private ImageView[] imageGrid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         Bitmap bp = BitmapFactory.decodeResource(getResources(), R.drawable.grumpy);
         final Bitmap cropped = Utils.cropBitmap(bp);
 
-        ImageView[] imageGrid= new ImageView[9];
+        imageGrid= new ImageView[9];
 
         imageGrid[0] = (ImageView) findViewById(R.id.img0);
         imageGrid[1] = (ImageView) findViewById(R.id.img1);
@@ -87,6 +91,28 @@ public class MainActivity extends AppCompatActivity {
                         emptyPosition = pos;
                         v.setTag(swap);
                         Log.d(TAG, "onClick: puzzle " + puzzle);
+
+                        v.animate().setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+
+                                if (puzzle.isSolved()){
+                                    Toast.makeText(MainActivity.this, "Finished!", Toast.LENGTH_LONG).show();
+
+                                    int x = puzzle.get(emptyPosition) % PUZZLE_WIDTH;
+                                    int y = puzzle.get(emptyPosition) / PUZZLE_WIDTH;
+
+                                    imageGrid[emptyPosition].setImageBitmap(Utils.getBitmapPiece(cropped, x, y, PUZZLE_WIDTH));
+                                    imageGrid[emptyPosition].setVisibility(View.VISIBLE);
+
+                                    for (int i = 0; i < PUZZLE_WIDTH * PUZZLE_WIDTH; i++) {
+                                        imageGrid[i].setOnClickListener(null);
+                                        imageGrid[i].animate().setStartDelay(2000).setDuration(1000).rotationBy(360).alpha(0);
+                                    }
+                                }
+                            }
+                        });
 
                     }
                 });
