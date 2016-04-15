@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "LOG_";
     private static final int PUZZLE_WIDTH = 3;
     private static final int CELL_PADDING = 10;
+    private static final String PUZZLE_KEY = "puzzle";
     private int emptyPosition;
     private Puzzle puzzle;
 
@@ -24,7 +25,13 @@ public class MainActivity extends AppCompatActivity {
         //Point size = new Point();
         //getWindowManager().getDefaultDisplay().getSize(size);
 
-        puzzle = new Puzzle(PUZZLE_WIDTH);
+        if (savedInstanceState != null){
+            puzzle = (Puzzle) savedInstanceState.getParcelable(PUZZLE_KEY);
+        }
+        else {
+            puzzle = new Puzzle(PUZZLE_WIDTH);
+        }
+
         Log.d(TAG, "onCreate: size " + puzzle);
 
         Bitmap bp = BitmapFactory.decodeResource(getResources(), R.drawable.grumpy);
@@ -86,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(PUZZLE_KEY, puzzle);
+        super.onSaveInstanceState(outState);
     }
 
     public void move(View view) {

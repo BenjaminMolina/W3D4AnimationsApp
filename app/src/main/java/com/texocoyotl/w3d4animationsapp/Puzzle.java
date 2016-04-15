@@ -1,6 +1,8 @@
 package com.texocoyotl.w3d4animationsapp;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.Vector;
 /**
  * Created by admin on 4/14/2016.
  */
-public class Puzzle {
+public class Puzzle implements Parcelable {
 
     private Vector<Integer> pieces;
     private int size;
@@ -49,4 +51,43 @@ public class Puzzle {
         }
 
     }
+
+    protected Puzzle(Parcel in) {
+        if (in.readByte() == 0x01) {
+            pieces = new Vector<Integer>();
+            in.readList(pieces, Integer.class.getClassLoader());
+        } else {
+            pieces = null;
+        }
+        size = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (pieces == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(pieces);
+        }
+        dest.writeInt(size);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Puzzle> CREATOR = new Parcelable.Creator<Puzzle>() {
+        @Override
+        public Puzzle createFromParcel(Parcel in) {
+            return new Puzzle(in);
+        }
+
+        @Override
+        public Puzzle[] newArray(int size) {
+            return new Puzzle[size];
+        }
+    };
 }

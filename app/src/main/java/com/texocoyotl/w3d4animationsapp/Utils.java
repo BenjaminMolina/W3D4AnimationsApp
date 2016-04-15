@@ -36,12 +36,12 @@ public class Utils {
     }
 
     public static Bitmap getBitmapPiece(Bitmap source, int x, int y, int size){
-        Log.d(TAG, "getBitmapPiece: " + x + " " + y);
+        //Log.d(TAG, "getBitmapPiece: " + x + " " + y);
 
         int startX = source.getWidth() * x / size;
         int startY = source.getHeight() * y / size;
 
-        Log.d(TAG, "getBitmapPiece: piece " + startX + " " + startY + " " + size);
+        //Log.d(TAG, "getBitmapPiece: piece " + startX + " " + startY + " " + size);
 
         return Bitmap.createBitmap(source, startX, startY, source.getWidth() / size, source.getHeight() / size);
     }
